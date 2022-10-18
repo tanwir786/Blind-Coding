@@ -32,7 +32,7 @@ app.post(`${api}/register`, async (req, res)=>{
             res.json(user);
         }else{
             const current= Date.now();
-            let difference=60*60-current/1000+user.time/1000;
+            let difference=60*60-(current/1000-user.time/1000);
             res.json(difference);
         }
         
@@ -53,6 +53,17 @@ app.post(`${api}/submit`, async(req, res)=>{
             await user.save();
             res.send({success: true});
         }
+    }catch(e){
+        res.send(e);
+    }
+})
+app.post(`${api}/disqualify`, async(req, res)=>{
+    try{
+        const {email}=req.body;
+        let user= await User.findOne({email});
+        user.disqualified=true;
+        await user.save();
+        res.send({success:true});
     }catch(e){
         res.send(e);
     }
