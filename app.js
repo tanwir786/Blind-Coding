@@ -1,12 +1,16 @@
+if (process.env.NODE_ENV !== "production") {
+  require('dotenv').config();
+}
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const User = require("./userModel");
 const app = express();
-
-const api = "/api/v1";
+const db_URL = process.env.db_URL || "mongodb://localhost:27017/blindCoding";
+const PORT = process.env.PORT || 3000;
+const api = process.env.api_URL || "/api/v1";
 mongoose
-  .connect("mongodb://localhost:27017/blindCoding", {
+  .connect(db_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -71,6 +75,10 @@ app.post(`${api}/disqualify`, async (req, res) => {
   try {
     const { email } = req.body;
     let user = await User.findOne({ email });
+    if (!user){
+      res.status(500).send("User Not found");
+      return;
+    }
     user.disqualified = true;
     await user.save();
     res.send({ success: true });
@@ -78,6 +86,6 @@ app.post(`${api}/disqualify`, async (req, res) => {
     res.status(500).send(e);
   }
 });
-app.listen(3000, () => {
-  console.log("Server Started at 3000");
+app.listen(PORT, () => {
+  console.log(`Server Started at ${PORT}`);
 });
