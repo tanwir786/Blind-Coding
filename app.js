@@ -43,25 +43,28 @@ app.post(`${api}/register`, async (req, res) => {
       res.json({ user, difference });
     }
   } catch (e) {
-    res.send(e);
+    res.status(500).send(e);
   }
 });
 app.post(`${api}/submit`, async (req, res) => {
   try {
     const { email, code, num } = req.body;
     let user = await User.findOne({ email });
-    console.log(user);
     if (!user) {
       res.statusCode = 401;
       res.json({ success: false });
     } else {
-      if (num == 1) user.code1 = code;
-      else user.code2 = code;
+      if (num == 1){
+        if (!user.code1) user.code1 = code;
+      }
+      else{
+        if (!user.code2) user.code2 = code;
+      }
       await user.save();
       res.send({ success: true });
     }
   } catch (e) {
-    res.send(e);
+    res.status(500).send(e);
   }
 });
 app.post(`${api}/disqualify`, async (req, res) => {
@@ -72,7 +75,7 @@ app.post(`${api}/disqualify`, async (req, res) => {
     await user.save();
     res.send({ success: true });
   } catch (e) {
-    res.send(e);
+    res.status(500).send(e);
   }
 });
 app.listen(3000, () => {
