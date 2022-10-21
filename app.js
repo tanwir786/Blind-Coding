@@ -28,7 +28,9 @@ app.use(cors());
 app.get(`${api}`, (req, res) => {
   res.send("HI, Blind conding");
 });
-
+app.get('/', (req, res)=>{
+  res.send('./public/index.html');
+})
 app.post(`${api}/register`, async (req, res) => {
   try {
     const data = req.body;
@@ -86,6 +88,10 @@ app.post(`${api}/disqualify`, async (req, res) => {
     res.status(500).send(e);
   }
 });
+
+app.get('*', (req, res)=>{
+  res.status(404).send('./public/index.html');
+})
 app.listen(PORT, () => {
   console.log(`Server Started at ${PORT}`);
 });
