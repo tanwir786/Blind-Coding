@@ -7,7 +7,8 @@ const cors = require("cors");
 const path = require("path");
 const User = require("./userModel");
 const app = express();
-const db_URL = process.env.db_URL || "mongodb://localhost:27017/blindCoding";
+// const db_URL = process.env.db_URL || "mongodb://localhost:27017/blindCoding";
+const db_URL = "mongodb+srv://first-user:P8vcn4kPO0quoHFw@cluster0.qiw3c.mongodb.net/?retryWrites=true&w=majority";
 const PORT = process.env.PORT || 3000;
 const api = process.env.api_URL || "/api/v1";
 mongoose
@@ -91,7 +92,21 @@ app.post(`${api}/disqualify`, async (req, res) => {
     res.status(500).send(e);
   }
 });
-
+app.get(`${api}/getCode/:email/blindcode`, async (req, res)=>{
+  try{
+    const { email } = req.params;
+    // console.log(email);
+    let user = await User.findOne({ email });
+    if (!user){
+      res.status(500).send("User Not found");
+      return;
+    }
+    // console.log(user);
+    res.json({code1:user.code1, code2:user.code2});
+  }catch(e){
+    res.status(500).send(e);
+  }
+})
 app.get('*', (req, res)=>{
   res.status(404).sendFile(path.join(__dirname, '/public/index.html'));
 })
