@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 const User = require("./userModel");
 const app = express();
 const db_URL = process.env.db_URL || "mongodb://localhost:27017/blindCoding";
@@ -24,12 +25,14 @@ mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.get(`${api}`, (req, res) => {
   res.send("HI, Blind conding");
 });
 app.get('/', (req, res)=>{
-  res.send('./public/index.html');
+  res.sendFile(path.join(__dirname, '/public/index.html'));
 })
 app.post(`${api}/register`, async (req, res) => {
   try {
@@ -90,7 +93,7 @@ app.post(`${api}/disqualify`, async (req, res) => {
 });
 
 app.get('*', (req, res)=>{
-  res.status(404).send('./public/index.html');
+  res.status(404).sendFile(path.join(__dirname, '/public/index.html'));
 })
 app.listen(PORT, () => {
   console.log(`Server Started at ${PORT}`);
