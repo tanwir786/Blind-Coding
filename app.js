@@ -7,8 +7,7 @@ const cors = require("cors");
 const path = require("path");
 const User = require("./userModel");
 const app = express();
-// const db_URL = process.env.db_URL || "mongodb://localhost:27017/blindCoding";
-const db_URL = "mongodb+srv://first-user:P8vcn4kPO0quoHFw@cluster0.qiw3c.mongodb.net/?retryWrites=true&w=majority";
+const db_URL = process.env.db_URL || "mongodb://localhost:27017/blindCoding";
 const PORT = process.env.PORT || 3000;
 const api = process.env.api_URL || "/api/v1";
 mongoose
